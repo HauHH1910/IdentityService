@@ -21,7 +21,11 @@ public class UserController {
 
     @PostMapping
     public ResponseData<UserResponse> createUser(@RequestBody UserCreationRequest request) {
-        return new ResponseData<>(HttpStatus.CREATED.value(), "Create User successfully", userService.createUser(request));
+        return ResponseData.<UserResponse>builder()
+                .code(HttpStatus.OK.value())
+                .message("Successfully created user")
+                .data(userService.createUser(request))
+                .build();
     }
 
     @GetMapping
