@@ -2,14 +2,20 @@ package com.hauhh.controller;
 
 import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.AuthenticationRequest;
-import com.hauhh.dto.response.AuthenticateResponse;
+import com.hauhh.dto.request.IntrospectRequest;
+import com.hauhh.dto.response.AuthenticationResponse;
+import com.hauhh.dto.response.IntrospectResponse;
+import com.hauhh.enums.ResponseCode;
 import com.hauhh.service.AuthenticationService;
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.text.ParseException;
 
 @RestController
 @RequiredArgsConstructor
@@ -18,15 +24,21 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/login")
-    public ResponseData<AuthenticateResponse> login(@RequestBody AuthenticationRequest request) {
-        boolean authenticated = authenticationService.authenticate(request);
-        return ResponseData.<AuthenticateResponse>builder()
+    @PostMapping("/token")
+    public ResponseData<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        return ResponseData.<AuthenticationResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(AuthenticateResponse.builder()
-                        .authenticated(authenticated)
-                        .build())
+                .data(authenticationService.authenticate(request))
+                .build();
+    }
+
+    @PostMapping("/introspect")
+    public ResponseData<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
+        return ResponseData.<IntrospectResponse>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .data(authenticationService.introspect(request))
                 .build();
     }
 
