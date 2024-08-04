@@ -8,7 +8,9 @@ import lombok.*;
 @NoArgsConstructor
 @Builder
 @Data
-public class AuthenticateResponse {
+public class AuthenticationResponse {
 
     private boolean authenticated;
+    private String token;
+
 }
