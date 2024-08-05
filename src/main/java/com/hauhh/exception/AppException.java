@@ -2,10 +2,8 @@ package com.hauhh.exception;
 
 import com.hauhh.enums.ErrorCode;
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-@Setter
 public class AppException extends RuntimeException{
 
     private final ErrorCode errorCode;
