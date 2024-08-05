@@ -29,7 +29,7 @@ public class AuthenticationController {
         return ResponseData.<AuthenticationResponse>builder()
                 .code(HttpStatus.OK.value())
                 .message(HttpStatus.OK.getReasonPhrase())
-                .data(authenticationService.authenticate(request))
+                .result(authenticationService.authenticate(request))
                 .build();
     }
 
@@ -38,7 +38,7 @@ public class AuthenticationController {
         return ResponseData.<IntrospectResponse>builder()
                 .code(ResponseCode.SUCCESS.getCode())
                 .message(ResponseCode.SUCCESS.getMessage())
-                .data(authenticationService.introspect(request))
+                .result(authenticationService.introspect(request))
                 .build();
     }
 

@@ -2,7 +2,6 @@ package com.hauhh.common;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -14,17 +13,6 @@ public class ResponseData<T> {
 
     private String message;
 
-    private T data;
-
-    public ResponseData(int code, String message, T data) {
-        this.code = code;
-        this.message = message;
-        this.data = data;
-    }
-
-    public ResponseData(int code, String message) {
-        this.code = code;
-        this.message = message;
-    }
+    private T result;
 
 }
