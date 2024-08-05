@@ -5,6 +5,7 @@ import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
 import com.hauhh.entity.User;
+import com.hauhh.enums.ResponseCode;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,31 +23,47 @@ public class UserController {
     @PostMapping
     public ResponseData<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         return ResponseData.<UserResponse>builder()
-                .code(HttpStatus.OK.value())
-                .message("Successfully created user")
-                .data(userService.createUser(request))
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .result(userService.createUser(request))
                 .build();
     }
 
     @GetMapping
     public ResponseData<List<UserResponse>> getAllUser() {
-        return new ResponseData<>(HttpStatus.OK.value(), "Get All Users", userService.getAllUser());
+        return ResponseData.<List<UserResponse>>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .result(userService.getAllUser())
+                .build();
     }
 
     @GetMapping("/{userID}")
     public ResponseData<UserResponse> getUser(@PathVariable String userID) {
-        return new ResponseData<>(HttpStatus.OK.value(), "Get User by ID: " + userID, userService.findUserByID(userID));
+        return ResponseData.<UserResponse>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .result(userService.findUserByID(userID))
+                .build();
     }
 
     @PutMapping("/{userID}")
     public ResponseData<UserResponse> updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest request) {
-        return new ResponseData<>(HttpStatus.OK.value(), "Update User by ID: " + userID, userService.updateUser(userID, request));
+        return ResponseData.<UserResponse>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .result(userService.updateUser(userID, request))
+                .build();
     }
 
     @DeleteMapping("/{userID}")
-    public ResponseData<User> deleteUser(@PathVariable String userID) {
+    public ResponseData<Void> deleteUser(@PathVariable String userID) {
         userService.deleteUserByID(userID);
-        return new ResponseData<>(HttpStatus.NO_CONTENT.value(), "Delete User by ID: " + userID);
+        return ResponseData.<Void>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .build();
     }
+
 
 }
