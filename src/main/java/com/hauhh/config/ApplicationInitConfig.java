@@ -12,9 +12,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 
+
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
-@Slf4j
 public class ApplicationInitConfig {
 
     private final PasswordEncoder passwordEncoder;
