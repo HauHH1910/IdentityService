@@ -8,11 +8,14 @@ import com.hauhh.entity.User;
 import com.hauhh.enums.ResponseCode;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
@@ -38,8 +41,13 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping("/{userID}")
+    @GetMapping("/getUser/{userID}")
     public ResponseData<UserResponse> getUser(@PathVariable String userID) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        log.info("Role: {}", authentication.getAuthorities().stream().toList());
+
         return ResponseData.<UserResponse>builder()
                 .code(ResponseCode.SUCCESS.getCode())
                 .message(ResponseCode.SUCCESS.getMessage())
