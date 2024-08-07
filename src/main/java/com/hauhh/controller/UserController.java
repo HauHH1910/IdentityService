@@ -41,6 +41,15 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("/myInfo")
+    public ResponseData<UserResponse> getMyInfo() {
+        return ResponseData.<UserResponse>builder()
+                .code(ResponseCode.SUCCESS.getCode())
+                .message(ResponseCode.SUCCESS.getMessage())
+                .result(userService.getUserInfo())
+                .build();
+    }
+
     @GetMapping("/getUser/{userID}")
     public ResponseData<UserResponse> getUser(@PathVariable String userID) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
