@@ -18,4 +18,6 @@ public interface UserService {
     UserResponse findUserByID(String userID);
 
     List<UserResponse> getAllUser();
+
+    UserResponse getUserInfo();
 }

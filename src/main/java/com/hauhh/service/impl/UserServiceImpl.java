@@ -11,13 +11,22 @@ import com.hauhh.mapper.UserMapper;
 import com.hauhh.repository.UserRepository;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -27,7 +36,11 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse createUser(UserCreationRequest request) {
+        if(userRepository.findByUsername(request.getUsername()).isPresent()){
+            throw new AppException(ErrorCode.USER_EXIST);
+        }
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -47,7 +60,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @PostAuthorize("returnObject.username == authentication.name")
     public UserResponse findUserByID(String userID) {
+        log.info("In method findUserByID");
         User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
         return userMapper.toUserResponse(user);
     }
@@ -57,8 +72,20 @@ public class UserServiceImpl implements UserService {
         userRepository.deleteById(userID);
     }
 
+
     @Override
+    public UserResponse getUserInfo() {
+        String name = SecurityContextHolder.getContext().getAuthentication().getName();
+
+        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        return userMapper.toUserResponse(user);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UserResponse> getAllUser() {
+        log.info("Get all User");
         return userMapper.toListUserResponse(userRepository.findAll());
     }
 }
