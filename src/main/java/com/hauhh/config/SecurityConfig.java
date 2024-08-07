@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -21,19 +22,20 @@ import javax.crypto.spec.SecretKeySpec;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Value("${com.hauhh.key}")
     private String key;
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/users",
             "/api/auth/token",
             "/api/auth/introspect",
     };
 
     private final String[] ADMIN_ENDPOINTS = {
-            "/api/users/getUser/**"
+            "/api/users",
+            "/api/users/getUser/**",
     };
 
     @Bean
@@ -41,7 +43,6 @@ public class SecurityConfig {
         httpSecurity.authorizeHttpRequests(requests ->
                         requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS).permitAll()
                                 .requestMatchers(HttpMethod.GET, PUBLIC_ENDPOINTS).permitAll()
-                                .requestMatchers(HttpMethod.GET, ADMIN_ENDPOINTS).hasRole(Role.ADMIN.name())
                                 .anyRequest().authenticated()
                 ).oauth2ResourceServer(oath2 -> oath2.jwt(jwtConfig ->
                         jwtConfig.decoder(jwtDecoder())
