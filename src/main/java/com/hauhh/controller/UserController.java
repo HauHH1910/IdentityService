@@ -5,6 +5,7 @@ import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
 import com.hauhh.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,7 +22,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseData<UserResponse> createUser(@RequestBody UserCreationRequest request) {
+    public ResponseData<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ResponseData.<UserResponse>builder()
                 .message("Create user")
                 .result(userService.createUser(request))
