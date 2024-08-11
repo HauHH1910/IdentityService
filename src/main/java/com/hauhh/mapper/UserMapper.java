@@ -5,6 +5,7 @@ import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
 import com.hauhh.entity.User;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
 import java.util.List;
@@ -16,7 +17,6 @@ public interface UserMapper {
 
     UserResponse toUserResponse(User user);
 
-    List<UserResponse> toListUserResponse(List<User> users);
-
+    @Mapping(target = "roles", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);
 }
