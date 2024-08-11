@@ -15,7 +15,10 @@ public enum ErrorCode {
     UNCATEGORIZED(1004, "Unauthorized", HttpStatus.INTERNAL_SERVER_ERROR),
     ACCESS_DENIED(1005, "Access denied", HttpStatus.FORBIDDEN),
     PERMISSION_IS_USED(1006, "Permission is used", HttpStatus.CONFLICT),
-    INVALID_DOB(1007, "Invalid date of birth", HttpStatus.FORBIDDEN),
+    INVALID_DOB(1007, "Your age must be at least {min}", HttpStatus.FORBIDDEN),
+    INVALID_KEY(1008, "Uncategorized error", HttpStatus.BAD_REQUEST),
+    USERNAME_INVALID(1009, "Username must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_PASSWORD(10010, "Password must be at least {min}", HttpStatus.BAD_REQUEST),
     ;
 
     private final int code;
