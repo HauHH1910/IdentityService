@@ -8,6 +8,7 @@ import com.hauhh.enums.ErrorCode;
 import com.hauhh.enums.Role;
 import com.hauhh.exception.AppException;
 import com.hauhh.mapper.UserMapper;
+import com.hauhh.repository.RoleRepository;
 import com.hauhh.repository.UserRepository;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +35,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
 
     @Override
     @PreAuthorize("hasRole('ADMIN')")
@@ -44,18 +46,21 @@ public class UserServiceImpl implements UserService {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        roles.add(Role.MODERATOR.name());
-        //user.setRoles(roles);
-
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
     @Override
     public UserResponse updateUser(String userID, UserUpdateRequest request) {
         User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
         userMapper.updateUser(user, request);
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        var roles = roleRepository.findAllById(request.getRoles());
+
+        user.setRoles(new HashSet<>(roles));
+
         return userMapper.toUserResponse(userRepository.save(user));
     }
 
@@ -83,10 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAuthority('READ_DATA')")
     public List<UserResponse> getAllUser() {
-        log.info("Get all User");
-        return userMapper.toListUserResponse(userRepository.findAll());
+        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
     }
 }
 
