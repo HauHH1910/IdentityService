@@ -30,6 +30,11 @@ public class UserController {
 
     @GetMapping
     public ResponseData<List<UserResponse>> getAllUser() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("User: {}",authentication.getName());
+        log.info("Role: {}", authentication.getAuthorities().stream().toList());
+
         return ResponseData.<List<UserResponse>>builder()
                 .message("Get all users")
                 .result(userService.getAllUser())
