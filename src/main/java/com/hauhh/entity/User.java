@@ -9,12 +9,11 @@ import java.util.Set;
 
 @Getter
 @Setter
+@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
-@Table(name = "user")
 public class User {
 
     @Id
@@ -26,7 +25,7 @@ public class User {
     String lastName;
     LocalDate dob;
 
-    @ElementCollection
-    Set<String> roles;
+    @ManyToMany
+    Set<Role> roles;
 
 }
