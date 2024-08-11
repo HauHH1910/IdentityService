@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
         HashSet<String> roles = new HashSet<>();
         roles.add(Role.USER.name());
         roles.add(Role.MODERATOR.name());
-        user.setRoles(roles);
+        //user.setRoles(roles);
 
         return userMapper.toUserResponse(userRepository.save(user));
     }
