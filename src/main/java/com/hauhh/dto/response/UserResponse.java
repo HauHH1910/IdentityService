@@ -1,8 +1,10 @@
 package com.hauhh.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.hauhh.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -15,10 +17,18 @@ import java.util.Set;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
+
     String id;
+
     String username;
+
     String firstName;
+
     String lastName;
+
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @JsonFormat(pattern = "dd-MM-yyyy")
     LocalDate dob;
+
     Set<RoleResponse> roles;
 }
