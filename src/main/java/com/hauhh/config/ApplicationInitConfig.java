@@ -1,7 +1,10 @@
 package com.hauhh.config;
 
+import com.hauhh.entity.Permission;
+import com.hauhh.entity.Role;
 import com.hauhh.entity.User;
-import com.hauhh.enums.Role;
+import com.hauhh.repository.PermissionRepository;
+import com.hauhh.repository.RoleRepository;
 import com.hauhh.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,6 +14,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
+import java.util.Set;
 
 
 @Slf4j
@@ -21,15 +25,28 @@ public class ApplicationInitConfig {
     private final PasswordEncoder passwordEncoder;
 
     @Bean
-    ApplicationRunner applicationRunner(UserRepository userRepository){
+    ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository, PermissionRepository permissionRepository){
         return args -> {
+            Permission permission = Permission.builder()
+                    .name("READ_DATA")
+                    .description("Read data from database")
+                    .build();
+            permissionRepository.save(permission);
+            Set<Permission> permissions = new HashSet<>();
+            permissions.add(permission);
+            Role role = Role.builder()
+                    .name("ADMIN")
+                    .description("Admin role")
+                    .permissions(permissions)
+                    .build();
+            roleRepository.save(role);
+            Set<Role> roles = new HashSet<>();
+            roles.add(role);
             if(userRepository.findByUsername("admin").isEmpty()){
-                var roles = new HashSet<String>();
-                roles.add(Role.ADMIN.name());
                 User adminUser = User.builder()
                         .username("admin")
                         .password(passwordEncoder.encode("123"))
-                        //.roles(roles)
+                        .roles(roles)
                         .build();
                 userRepository.save(adminUser);
                 log.warn("Admin user has been createPermission with default password 123");
