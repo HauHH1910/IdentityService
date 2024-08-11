@@ -9,7 +9,8 @@ import lombok.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ResponseData<T> {
 
-    private int code;
+    @Builder.Default
+    private int code = 1000;
 
     private String message;
 
