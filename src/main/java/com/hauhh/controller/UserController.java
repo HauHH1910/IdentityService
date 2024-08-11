@@ -4,12 +4,9 @@ import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
-import com.hauhh.entity.User;
-import com.hauhh.enums.ResponseCode;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +23,7 @@ public class UserController {
     @PostMapping
     public ResponseData<UserResponse> createUser(@RequestBody UserCreationRequest request) {
         return ResponseData.<UserResponse>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Create user")
                 .result(userService.createUser(request))
                 .build();
     }
@@ -35,8 +31,7 @@ public class UserController {
     @GetMapping
     public ResponseData<List<UserResponse>> getAllUser() {
         return ResponseData.<List<UserResponse>>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Get all users")
                 .result(userService.getAllUser())
                 .build();
     }
@@ -44,8 +39,7 @@ public class UserController {
     @GetMapping("/myInfo")
     public ResponseData<UserResponse> getMyInfo() {
         return ResponseData.<UserResponse>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Get user info")
                 .result(userService.getUserInfo())
                 .build();
     }
@@ -58,8 +52,7 @@ public class UserController {
         log.info("Role: {}", authentication.getAuthorities().stream().toList());
 
         return ResponseData.<UserResponse>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Get user info")
                 .result(userService.findUserByID(userID))
                 .build();
     }
@@ -67,8 +60,7 @@ public class UserController {
     @PutMapping("/{userID}")
     public ResponseData<UserResponse> updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest request) {
         return ResponseData.<UserResponse>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Update user")
                 .result(userService.updateUser(userID, request))
                 .build();
     }
@@ -77,8 +69,7 @@ public class UserController {
     public ResponseData<Void> deleteUser(@PathVariable String userID) {
         userService.deleteUserByID(userID);
         return ResponseData.<Void>builder()
-                .code(ResponseCode.SUCCESS.getCode())
-                .message(ResponseCode.SUCCESS.getMessage())
+                .message("Delete user")
                 .build();
     }
 
