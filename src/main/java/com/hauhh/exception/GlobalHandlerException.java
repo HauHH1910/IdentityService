@@ -8,6 +8,8 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @ControllerAdvice
 public class GlobalHandlerException {
 
@@ -27,6 +29,15 @@ public class GlobalHandlerException {
                 .body(ResponseError.builder()
                         .code(ErrorCode.ACCESS_DENIED.getCode())
                         .message(ErrorCode.ACCESS_DENIED.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public ResponseEntity<ResponseError> handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException sqlIntegrityConstraintViolationException) {
+        return ResponseEntity.status(ErrorCode.PERMISSION_IS_USED.getStatusCode())
+                .body(ResponseError.builder()
+                        .code(ErrorCode.PERMISSION_IS_USED.getCode())
+                        .message(ErrorCode.PERMISSION_IS_USED.getMessage())
                         .build());
     }
 
