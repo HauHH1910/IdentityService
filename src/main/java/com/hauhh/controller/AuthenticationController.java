@@ -3,6 +3,7 @@ package com.hauhh.controller;
 import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.AuthenticationRequest;
 import com.hauhh.dto.request.IntrospectRequest;
+import com.hauhh.dto.request.LogoutRequest;
 import com.hauhh.dto.response.AuthenticationResponse;
 import com.hauhh.dto.response.IntrospectResponse;
 import com.hauhh.service.AuthenticationService;
@@ -35,6 +36,14 @@ public class AuthenticationController {
         return ResponseData.<IntrospectResponse>builder()
                 .message("Introspect successful")
                 .result(authenticationService.introspect(request))
+                .build();
+    }
+
+    @PostMapping("/logout")
+    public ResponseData<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
+        authenticationService.logout(request);
+        return ResponseData.<Void>builder()
+                .message("Logout successful")
                 .build();
     }
 
