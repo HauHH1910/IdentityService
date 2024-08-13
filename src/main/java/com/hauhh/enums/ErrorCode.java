@@ -19,6 +19,7 @@ public enum ErrorCode {
     INVALID_KEY(1008, "Uncategorized error", HttpStatus.BAD_REQUEST),
     USERNAME_INVALID(1009, "Username must be at least {min}", HttpStatus.BAD_REQUEST),
     INVALID_PASSWORD(10010, "Password must be at least {min}", HttpStatus.BAD_REQUEST),
+    INVALID_TOKEN(10011, "Invalid token", HttpStatus.UNAUTHORIZED),
     ;
 
     private final int code;
