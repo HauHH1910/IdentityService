@@ -4,8 +4,10 @@ import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.AuthenticationRequest;
 import com.hauhh.dto.request.IntrospectRequest;
 import com.hauhh.dto.request.LogoutRequest;
+import com.hauhh.dto.request.RefreshRequest;
 import com.hauhh.dto.response.AuthenticationResponse;
 import com.hauhh.dto.response.IntrospectResponse;
+import com.hauhh.dto.response.RefreshResponse;
 import com.hauhh.service.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
@@ -44,6 +46,14 @@ public class AuthenticationController {
         authenticationService.logout(request);
         return ResponseData.<Void>builder()
                 .message("Logout successful")
+                .build();
+    }
+
+    @PostMapping("/refresh")
+    public ResponseData<RefreshResponse> refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
+        return ResponseData.<RefreshResponse>builder()
+                .message("Refresh successful")
+                .result(authenticationService.refreshToken(request))
                 .build();
     }
 
