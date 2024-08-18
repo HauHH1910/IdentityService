@@ -3,8 +3,10 @@ package com.hauhh.service;
 import com.hauhh.dto.request.AuthenticationRequest;
 import com.hauhh.dto.request.IntrospectRequest;
 import com.hauhh.dto.request.LogoutRequest;
+import com.hauhh.dto.request.RefreshRequest;
 import com.hauhh.dto.response.AuthenticationResponse;
 import com.hauhh.dto.response.IntrospectResponse;
+import com.hauhh.dto.response.RefreshResponse;
 import com.nimbusds.jose.JOSEException;
 
 import java.text.ParseException;
@@ -16,4 +18,6 @@ public interface AuthenticationService {
     IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException;
 
     void logout(LogoutRequest request) throws ParseException, JOSEException;
+
+    RefreshResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException;
 }

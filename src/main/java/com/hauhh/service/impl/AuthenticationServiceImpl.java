@@ -3,8 +3,10 @@ package com.hauhh.service.impl;
 import com.hauhh.dto.request.AuthenticationRequest;
 import com.hauhh.dto.request.IntrospectRequest;
 import com.hauhh.dto.request.LogoutRequest;
+import com.hauhh.dto.request.RefreshRequest;
 import com.hauhh.dto.response.AuthenticationResponse;
 import com.hauhh.dto.response.IntrospectResponse;
+import com.hauhh.dto.response.RefreshResponse;
 import com.hauhh.entity.InvalidateToken;
 import com.hauhh.entity.User;
 import com.hauhh.enums.ErrorCode;
@@ -96,6 +98,33 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         tokenRepository.save(invalidateToken);
     }
 
+    @Override
+    public RefreshResponse refreshToken(RefreshRequest request) throws ParseException, JOSEException {
+        //Kiểm tra xem token còn hiệu lực không
+        var signJWT = verifyToken(request.getToken());
+
+        var jit = signJWT.getJWTClaimsSet().getJWTID();
+
+        var expirationDate = signJWT.getJWTClaimsSet().getExpirationTime();
+
+        InvalidateToken invalidateToken = InvalidateToken.builder()
+                .tokenID(jit)
+                .expiryTime(expirationDate)
+                .build();
+
+        tokenRepository.save(invalidateToken);
+
+        var username = signJWT.getJWTClaimsSet().getSubject();
+
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+
+        var token = generateToken(user);
+
+        return RefreshResponse.builder()
+                .token(token)
+                .authenticated(true)
+                .build();
+    }
 
 
     private String generateToken(User user) {
