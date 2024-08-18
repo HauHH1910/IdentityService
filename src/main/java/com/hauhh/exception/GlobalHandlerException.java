@@ -58,14 +58,15 @@ public class GlobalHandlerException {
         try {
             errorCode = ErrorCode.valueOf(enumKey);
 
-            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
+
+         var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
 
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 
             log.info(attributes.toString());
 
-        }catch (IllegalArgumentException e) {
-            log.error("[handleValidation] Error: {}", e.getMessage());
+        } catch (IllegalArgumentException e) {
+            log.error("[handleValidation] Error IllegalArgumentException: {}", e.getMessage());
         }
 
         log.info("[handleValidation] Code: {}", errorCode.getCode());
@@ -75,11 +76,11 @@ public class GlobalHandlerException {
                 .body(ResponseError.builder()
                         .code(errorCode.getCode())
                         .message(Objects.nonNull(attributes) ?
-                            mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
+                                mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
                         .build());
     }
 
-    private String mapAttribute(String message, Map<String, Object> attributes){
+    private String mapAttribute(String message, Map<String, Object> attributes) {
         String minValue = String.valueOf(attributes.get(MIN_ATTRIBUTE));
 
         return message.replace("{" + MIN_ATTRIBUTE + "}", minValue);
