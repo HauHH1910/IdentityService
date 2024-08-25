@@ -1,6 +1,6 @@
 package com.hauhh.validator;
 
-import com.hauhh.annotations.DoBConstraint;
+import com.hauhh.constraint.DoBConstraint;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.extern.slf4j.Slf4j;

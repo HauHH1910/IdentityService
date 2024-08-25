@@ -1,4 +1,4 @@
-package com.hauhh.annotations;
+package com.hauhh.constraint;
 
 import com.hauhh.validator.DoBValidator;
 import jakarta.validation.Constraint;
