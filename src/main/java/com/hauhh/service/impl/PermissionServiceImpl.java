@@ -2,7 +2,7 @@ package com.hauhh.service.impl;
 
 import com.hauhh.dto.request.PermissionRequest;
 import com.hauhh.dto.response.PermissionResponse;
-import com.hauhh.entity.Permission;
+import com.hauhh.entities.Permission;
 import com.hauhh.mapper.PermissionMapper;
 import com.hauhh.repository.PermissionRepository;
 import com.hauhh.service.PermissionService;

@@ -1,7 +1,6 @@
 package com.hauhh.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hauhh.entity.Role;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.springframework.format.annotation.DateTimeFormat;

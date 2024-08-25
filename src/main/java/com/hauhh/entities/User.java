@@ -1,4 +1,4 @@
-package com.hauhh.entity;
+package com.hauhh.entities;
 
 import jakarta.persistence.*;
 import lombok.*;

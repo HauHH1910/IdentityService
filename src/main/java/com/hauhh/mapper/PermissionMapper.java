@@ -2,7 +2,7 @@ package com.hauhh.mapper;
 
 import com.hauhh.dto.request.PermissionRequest;
 import com.hauhh.dto.response.PermissionResponse;
-import com.hauhh.entity.Permission;
+import com.hauhh.entities.Permission;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

@@ -2,7 +2,6 @@ package com.hauhh.service.impl;
 
 import com.hauhh.dto.request.RoleRequest;
 import com.hauhh.dto.response.RoleResponse;
-import com.hauhh.entity.Role;
 import com.hauhh.mapper.RoleMapper;
 import com.hauhh.repository.PermissionRepository;
 import com.hauhh.repository.RoleRepository;

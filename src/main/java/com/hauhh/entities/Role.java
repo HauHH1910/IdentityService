@@ -1,10 +1,12 @@
-package com.hauhh.entity;
-
+package com.hauhh.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,11 +15,13 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Permission {
+public class Role {
 
     @Id
     String name;
 
     String description;
 
+    @ManyToMany
+    Set<Permission> permissions;
 }

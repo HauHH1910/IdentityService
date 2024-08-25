@@ -1,6 +1,6 @@
 package com.hauhh.repository;
 
-import com.hauhh.entity.Permission;
+import com.hauhh.entities.Permission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -3,12 +3,10 @@ package com.hauhh.mapper;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
-import com.hauhh.entity.User;
+import com.hauhh.entities.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface UserMapper {

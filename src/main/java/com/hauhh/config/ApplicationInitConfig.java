@@ -1,8 +1,8 @@
 package com.hauhh.config;
 
-import com.hauhh.entity.Permission;
-import com.hauhh.entity.Role;
-import com.hauhh.entity.User;
+import com.hauhh.entities.Permission;
+import com.hauhh.entities.Role;
+import com.hauhh.entities.User;
 import com.hauhh.repository.PermissionRepository;
 import com.hauhh.repository.RoleRepository;
 import com.hauhh.repository.UserRepository;

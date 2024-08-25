@@ -1,27 +1,24 @@
-package com.hauhh.entity;
+package com.hauhh.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
+import java.util.Date;
 
+@Entity
 @Getter
 @Setter
-@Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Role {
+public class InvalidateToken {
 
     @Id
-    String name;
+    String tokenID;
+    Date expiryTime;//Thời gian expi của token
 
-    String description;
 
-    @ManyToMany
-    Set<Permission> permissions;
 }

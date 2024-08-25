@@ -2,7 +2,7 @@ package com.hauhh.mapper;
 
 import com.hauhh.dto.request.RoleRequest;
 import com.hauhh.dto.response.RoleResponse;
-import com.hauhh.entity.Role;
+import com.hauhh.entities.Role;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 

@@ -3,7 +3,6 @@ package com.hauhh.service;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
-import com.hauhh.entity.User;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.hauhh.repository;
 
-import com.hauhh.entity.User;
+import com.hauhh.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

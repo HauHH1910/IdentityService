@@ -3,9 +3,8 @@ package com.hauhh.service.impl;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
-import com.hauhh.entity.User;
+import com.hauhh.entities.User;
 import com.hauhh.enums.ErrorCode;
-import com.hauhh.enums.Role;
 import com.hauhh.exception.AppException;
 import com.hauhh.mapper.UserMapper;
 import com.hauhh.repository.RoleRepository;
@@ -13,19 +12,14 @@ import com.hauhh.repository.UserRepository;
 import com.hauhh.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @Service
