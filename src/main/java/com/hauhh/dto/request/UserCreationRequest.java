@@ -1,12 +1,10 @@
 package com.hauhh.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.hauhh.annotations.DoBConstraint;
+import com.hauhh.constraint.DoBConstraint;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Data
