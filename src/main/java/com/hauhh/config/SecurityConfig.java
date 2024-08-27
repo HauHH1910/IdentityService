@@ -7,6 +7,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,9 +39,9 @@ public class SecurityConfig {
                         .authenticated());
 
         httpSecurity.oauth2ResourceServer(oath2 -> oath2.jwt(jwtConfig -> jwtConfig
-                        .decoder(customJwtDecoder)
-                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
-                ).authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+                .decoder(customJwtDecoder)
+                .jwtAuthenticationConverter(jwtAuthenticationConverter())
+        ).authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
         httpSecurity.csrf(AbstractHttpConfigurer::disable);
 
@@ -61,4 +62,14 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(10);
     }
 
+
+    //Customize Spring Security to enable Swagger
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return webSecurity -> {
+            webSecurity.ignoring().requestMatchers(
+                    "/swagger-ui/**", "/v3/api-docs/**"
+            );
+        };
+    }
 }
