@@ -15,3 +15,13 @@ com:
     key: "GMOetuUdwobZblQf2oCvbOuUT3jIEO05KdZ1RgFxGE1rDglmti25nVNLrNF6eCtY"
     valid-duration: 3600 # in seconds
     refreshable-duration: 36000 #in second
+
+
+open:
+  api:
+    title: API Document
+    version: v1.0.0
+    description: Spring Boot API Document by HauHH
+    server:
+      url: http://localhost:8080
+      description: Spring Boot
