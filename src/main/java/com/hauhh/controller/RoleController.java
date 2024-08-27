@@ -5,6 +5,8 @@ import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.RoleRequest;
 import com.hauhh.dto.response.RoleResponse;
 import com.hauhh.service.RoleService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Tag(name = "Role Controller")
 @RequestMapping("/api/roles")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -22,6 +25,10 @@ public class RoleController {
 
     RoleService roleService;
 
+    @Operation(
+            summary = "Create new Role",
+            description = "Create new Role for User"
+    )
     @PostMapping
     public ResponseData<RoleResponse> createRole(@RequestBody RoleRequest roleRequest) {
         return ResponseData.<RoleResponse>builder()
@@ -30,6 +37,10 @@ public class RoleController {
                 .build();
     }
 
+    @Operation(
+            summary = "Get all roles",
+            description = "Get all roles from database"
+    )
     @GetMapping
     public ResponseData<List<RoleResponse>> getAllRoles() {
         return ResponseData.<List<RoleResponse>>builder()
@@ -38,6 +49,11 @@ public class RoleController {
                 .build();
     }
 
+
+    @Operation(
+            summary = "Delete role",
+            description = "Delete role"
+    )
     @DeleteMapping("/{role}")
     public ResponseData<Void> deleteRole(@PathVariable String role) {
         roleService.deleteRole(role);
