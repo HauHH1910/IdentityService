@@ -1,6 +1,7 @@
 package com.hauhh.controller;
 
 import com.hauhh.common.ResponseData;
+import com.hauhh.config.Translator;
 import com.hauhh.dto.request.AuthenticationRequest;
 import com.hauhh.dto.request.IntrospectRequest;
 import com.hauhh.dto.request.LogoutRequest;
@@ -28,7 +29,7 @@ public class AuthenticationController {
     @PostMapping("/token")
     public ResponseData<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
         return ResponseData.<AuthenticationResponse>builder()
-                .message("Login successful")
+                .message(Translator.toLocale("login.success"))
                 .result(authenticationService.authenticate(request))
                 .build();
     }
