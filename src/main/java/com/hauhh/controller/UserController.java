@@ -5,6 +5,8 @@ import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
 import com.hauhh.dto.response.UserResponse;
 import com.hauhh.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,12 +17,17 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/users")
 @RequiredArgsConstructor
+@Tag(name = "User Controller")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
 
+    @Operation(
+            summary = "Create new User",
+            description = "Create new User"
+    )
     @PostMapping
     public ResponseData<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         return ResponseData.<UserResponse>builder()
@@ -29,6 +36,10 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Get all user",
+            description = "Get all User from Database"
+    )
     @GetMapping
     public ResponseData<List<UserResponse>> getAllUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -42,6 +53,10 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Get Info",
+            description = "Get User info using JWT"
+    )
     @GetMapping("/myInfo")
     public ResponseData<UserResponse> getMyInfo() {
         return ResponseData.<UserResponse>builder()
@@ -50,6 +65,10 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Get User",
+            description = "Get User from database"
+    )
     @GetMapping("/getUser/{userID}")
     public ResponseData<UserResponse> getUser(@PathVariable String userID) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -63,6 +82,10 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Update User",
+            description = "Update existing User"
+    )
     @PutMapping("/{userID}")
     public ResponseData<UserResponse> updateUser(@PathVariable String userID, @RequestBody UserUpdateRequest request) {
         return ResponseData.<UserResponse>builder()
@@ -71,6 +94,10 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Delete User",
+            description = "Delete User By ID"
+    )
     @DeleteMapping("/{userID}")
     public ResponseData<Void> deleteUser(@PathVariable String userID) {
         userService.deleteUserByID(userID);
