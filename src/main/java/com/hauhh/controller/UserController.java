@@ -32,6 +32,7 @@ public class UserController {
     public ResponseData<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         log.info("Controller: Create User");
         return ResponseData.<UserResponse>builder()
+                .code(1000)
                 .message("Create user")
                 .result(userService.createUser(request))
                 .build();
