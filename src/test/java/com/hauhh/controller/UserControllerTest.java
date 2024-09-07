@@ -1,10 +1,10 @@
 package com.hauhh.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.response.UserResponse;
+import com.hauhh.entities.User;
 import com.hauhh.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
@@ -17,24 +17,32 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.time.LocalDate;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles(value = "test")
+@TestPropertySource("/test.properties")
 public class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockBean
     private UserService userService;
@@ -48,8 +56,8 @@ public class UserControllerTest {
     @BeforeEach
     public void initData() throws Exception {
         ResultActions resultActions = this.mockMvc.perform(post("/api/auth/token")
-                        .content("{\"username\":\"admin\", \"password\":\"123\"}")
-                        .contentType(MediaType.APPLICATION_JSON));
+                .content("{\"username\":\"admin\", \"password\":\"123\"}")
+                .contentType(MediaType.APPLICATION_JSON));
 
         MvcResult mvcResult = resultActions.andDo(MockMvcResultHandlers.print()).andReturn();
 
@@ -81,25 +89,20 @@ public class UserControllerTest {
     @Test
     void createUser_valid_request_success() throws Exception {
         // GIVEN
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-        String contentMapper = objectMapper.writeValueAsString(userRequest);
+        this.objectMapper.registerModule(new JavaTimeModule());
 
-        Mockito.when(userService.createUser(ArgumentMatchers.any())).thenReturn(userResponse);
+        String requestBody = this.objectMapper.writeValueAsString(userRequest);
+
+        when(userService.createUser(any(UserCreationRequest.class))).thenReturn(userResponse);
         // WHEN, THEN
         mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .header("Authorization", token)
-                        .content(contentMapper))
-                .andExpect(MockMvcResultMatchers
-                        .status()
-                        .isOk())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("code")
-                        .value("1000"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("result.id")
-                        .value("123456"));
+                        .content(requestBody)
+                        .header("Authorization", this.token)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("code").value("1000"))
+                .andExpect(jsonPath("result.id").value("123456"));
     }
 
     @Test
@@ -112,17 +115,14 @@ public class UserControllerTest {
         String valueAsString = objectMapper.writeValueAsString(userRequest);
         //WHEN
         mockMvc.perform(post("/api/users")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(valueAsString)
                         .header("Authorization", token)
-                        .content(valueAsString))
-                .andExpect(MockMvcResultMatchers
-                        .status()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(status()
                         .isBadRequest())
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("code")
+                .andExpect(jsonPath("code")
                         .value("1009"))
-                .andExpect(MockMvcResultMatchers
-                        .jsonPath("message")
+                .andExpect(jsonPath("message")
                         .value("Username must be at least 3"));
     }
 
