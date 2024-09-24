@@ -16,7 +16,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+//@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -24,7 +24,7 @@ public class SecurityConfig {
     private String key;
 
     private final String[] PUBLIC_ENDPOINTS = {
-            "/api/auth/token", "/api/auth/introspect", "/api/auth/logout", "/api/auth/refresh"
+            "/api/auth/token", "/api/auth/introspect", "/api/auth/logout", "/api/auth/refresh", "/api/user/sort/**"
     };
 
     private CustomJWTDecoder customJwtDecoder;
@@ -34,6 +34,8 @@ public class SecurityConfig {
 
         httpSecurity.authorizeHttpRequests(requests ->
                 requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
+                        .permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api/docs/**")
                         .permitAll()
                         .anyRequest()
                         .authenticated());
@@ -60,16 +62,5 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
-    }
-
-
-    //Customize Spring Security to enable Swagger
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return webSecurity -> {
-            webSecurity.ignoring().requestMatchers(
-                    "/swagger-ui/**", "/v3/api-docs/**"
-            );
-        };
     }
 }
