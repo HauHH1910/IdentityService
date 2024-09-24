@@ -14,6 +14,7 @@ import com.nimbusds.jose.JOSEException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 
+@Slf4j
 @RestController
 @Tag(name = "Authentication Controller")
 @RequiredArgsConstructor
@@ -36,8 +38,10 @@ public class AuthenticationController {
     )
     @PostMapping("/token")
     public ResponseData<AuthenticationResponse> login(@RequestBody AuthenticationRequest request) {
+        log.info("Attempting to authenticate user: {}", request.getUsername());
+        log.info("Attempting to authenticate user password: {}", request.getPassword());
         return ResponseData.<AuthenticationResponse>builder()
-                .message(Translator.toLocale("login.success"))
+                .message("Login success")
                 .result(authenticationService.authenticate(request))
                 .build();
     }

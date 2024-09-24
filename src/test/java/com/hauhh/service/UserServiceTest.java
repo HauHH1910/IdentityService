@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Slf4j
 @SpringBootTest
 @AutoConfigureMockMvc
-@TestPropertySource("/test.properties")
+@TestPropertySource("/test.yaml")
 public class UserServiceTest {
 
     @Autowired

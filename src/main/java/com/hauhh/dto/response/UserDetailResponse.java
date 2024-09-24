@@ -1,34 +1,31 @@
 package com.hauhh.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Set;
 
-@Data
+@Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Getter
-@Setter
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse  implements Serializable {
+public class UserDetailResponse implements Serializable {
 
-    String id;
+    private String id;
 
-    String username;
+    private String username;
 
-    String firstName;
+    private String firstName;
 
-    String lastName;
+    private String lastName;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @JsonFormat(pattern = "dd-MM-yyyy")
     LocalDate dob;
 
-    Set<RoleResponse> roles;
 }

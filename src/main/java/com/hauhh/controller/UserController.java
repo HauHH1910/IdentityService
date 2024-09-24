@@ -3,11 +3,14 @@ package com.hauhh.controller;
 import com.hauhh.common.ResponseData;
 import com.hauhh.dto.request.UserCreationRequest;
 import com.hauhh.dto.request.UserUpdateRequest;
+import com.hauhh.dto.response.PageResponse;
+import com.hauhh.dto.response.UserDetailResponse;
 import com.hauhh.dto.response.UserResponse;
 import com.hauhh.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,7 +49,7 @@ public class UserController {
     public ResponseData<List<UserResponse>> getAllUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        log.info("User: {}",authentication.getName());
+        log.info("User: {}", authentication.getName());
         log.info("Role: {}", authentication.getAuthorities().stream().toList());
 
         return ResponseData.<List<UserResponse>>builder()
@@ -76,7 +79,7 @@ public class UserController {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
 
         log.info("Username: {}", authentication.getName());
-        log.info("Role: {}", authentication.getAuthorities().stream().toList());
+        log.info("Role when get User: {}", authentication.getAuthorities().stream().toList());
 
         return ResponseData.<UserResponse>builder()
                 .message("Get user info")
@@ -108,5 +111,50 @@ public class UserController {
                 .build();
     }
 
+    @Operation(
+            summary = "Get all User using sort by ",
+            description = "Get all user return page no, page size, total page and sort by ASC or DESC"
+    )
+    @GetMapping("/sort")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllUserByUsingSortBy
+            (@RequestParam(defaultValue = "0", required = false) int pageNo,
+                @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+                @RequestParam(required = false) String sortBy) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message("Get all users")
+                .result(userService.getUserUsingSortBy(pageNo, pageSize, sortBy))
+                .build();
+    }
+
+    @Operation(
+            summary = "Get all User using sort by with multiple column",
+            description = "Get all user return page no, page size, total page and sort by ASC or DESC"
+    )
+    @GetMapping("/sortv2")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllUserByUsingSortByMultipleColumn
+            (@RequestParam(defaultValue = "0", required = false) int pageNo,
+                @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+                @RequestParam(required = false) String... sortBy) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message("Get all users")
+                .result(userService.getUserSortByMultipleColumn(pageNo, pageSize, sortBy))
+                .build();
+    }
+
+    @Operation(
+            summary = "Get all User using sort by with multiple column and search",
+            description = "Get all user return page no, page size, total page, search and sort by ASC or DESC"
+    )
+    @GetMapping("/sortv3")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllUserByUsingSortByMultipleColumnAndSearch
+            (@RequestParam(defaultValue = "0", required = false) int pageNo,
+                @RequestParam(defaultValue = "20") int pageSize,
+                @RequestParam(required = false) String search,
+                @RequestParam(required = false) String sortBy) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message("Get all users")
+                .result(userService.getAllUserWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy))
+                .build();
+    }
 
 }
