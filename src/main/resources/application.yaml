@@ -5,7 +5,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: "jdbc:mysql://localhost:3306/devteria?createDatabaseIfNotExist=true"
+    url: jdbc:mysql://localhost:3306/devteria?createDatabaseIfNotExist=true
   jpa:
     hibernate:
       ddl-auto: update
@@ -15,6 +15,7 @@ com:
     key: "GMOetuUdwobZblQf2oCvbOuUT3jIEO05KdZ1RgFxGE1rDglmti25nVNLrNF6eCtY"
     valid-duration: 3600 # in seconds
     refreshable-duration: 36000 #in second
+
 
 open:
   api:
