@@ -2,6 +2,7 @@ package com.hauhh.mappers;
 
 import com.hauhh.controllers.request.UserCreationRequest;
 import com.hauhh.controllers.request.UserUpdateRequest;
+import com.hauhh.controllers.response.UserDetailResponse;
 import com.hauhh.controllers.response.UserResponse;
 import com.hauhh.models.User;
 import org.mapstruct.Mapper;
@@ -13,7 +14,7 @@ public interface UserMapper {
 
     User toUser(UserCreationRequest request);
 
-    UserResponse toUserResponse(User user);
+    UserDetailResponse toUserResponse(User user);
 
     @Mapping(target = "roles", ignore = true)
     void updateUser(@MappingTarget User user, UserUpdateRequest request);

@@ -4,7 +4,6 @@ import com.hauhh.controllers.request.UserCreationRequest;
 import com.hauhh.controllers.request.UserUpdateRequest;
 import com.hauhh.controllers.response.PageResponse;
 import com.hauhh.controllers.response.UserDetailResponse;
-import com.hauhh.controllers.response.UserResponse;
 import com.hauhh.models.User;
 import com.hauhh.models.enums.ErrorCode;
 import com.hauhh.exceptions.AppException;
@@ -12,7 +11,7 @@ import com.hauhh.mappers.UserMapper;
 import com.hauhh.repositories.RoleRepository;
 import com.hauhh.repositories.SearchRepository;
 import com.hauhh.repositories.UserRepository;
-import com.hauhh.services.UserService;
+import com.hauhh.services.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -33,7 +32,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCreationRequest, UserUpdateRequest>{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -44,8 +43,7 @@ public class UserServiceImpl implements UserService {
     private final String REGEX_SORT_BY = "(\\w+?)(:)(.*)";
 
     @Override
-    //@PreAuthorize("hasRole('ADMIN')")
-    public UserResponse createUser(UserCreationRequest request) {
+    public UserDetailResponse create(UserCreationRequest request) {
         log.info("Create User");
 
         if (userRepository.existsByUsername(request.getUsername()))
@@ -57,8 +55,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(String userID, UserUpdateRequest request) {
-        User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+    public UserDetailResponse update(String id, UserUpdateRequest request) {
+        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
 
         userMapper.updateUser(user, request);
 
@@ -72,36 +70,47 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    //@PostAuthorize("returnObject.username == authentication.name")
-    public UserResponse findUserByID(String userID) {
+    public void delete(String id) {
+        userRepository.findById(id)
+                .ifPresentOrElse(userRepository::delete,
+                        () -> {
+                            throw new AppException(ErrorCode.USER_NOT_EXIST);
+                        });
+    }
+
+    @Override
+    public UserDetailResponse findByID(String id) {
         log.info("In method findUserByID");
-        User user = userRepository.findById(userID).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
         return userMapper.toUserResponse(user);
     }
 
     @Override
-    public void deleteUserByID(String userID) {
-        userRepository.deleteById(userID);
-    }
-
-
-    @Override
-    public UserResponse getUserInfo() {
-        String name = SecurityContextHolder.getContext().getAuthentication().getName();
-
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
-
-        return userMapper.toUserResponse(user);
+    public List<UserDetailResponse> findAll() {
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toUserResponse)
+                .toList();
     }
 
     @Override
-    // @PreAuthorize("hasAuthority('READ_DATA')")
-    public List<UserResponse> getAllUser() {
-        return userRepository.findAll().stream().map(userMapper::toUserResponse).toList();
+    public UserDetailResponse get() {
+        String name = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        User user = userRepository
+                .findByUsername(name)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+
+        return userMapper
+                .toUserResponse(user);
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getUserUsingSortBy(int pageNo, int pageSize, String sortBy) {
+    public PageResponse<List<UserDetailResponse>> getUsingSort(int pageNo, int pageSize, String sortBy) {
         int defaultValuePage = 0;
         if (pageNo > 0) {
             defaultValuePage = pageNo - 1;
@@ -144,7 +153,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getUserSortByMultipleColumn(int pageNo, int pageSize, String... sortBy) {
+    public PageResponse<List<UserDetailResponse>> getSortByMultipleColumn(int pageNo, int pageSize, String... sortBy) {
         if (pageNo > 0) {
             pageNo = pageNo - 1;
         }
@@ -186,7 +195,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getAllUserWithSortByMultipleColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
+    public PageResponse<List<UserDetailResponse>> getWithSortByMultipleColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
         return searchRepository.getAllUserWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy);
     }
 }

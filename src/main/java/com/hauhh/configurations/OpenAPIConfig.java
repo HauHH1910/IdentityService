@@ -49,7 +49,7 @@ public class OpenAPIConfig {
     public GroupedOpenApi groupedOpenAPI(){
         return GroupedOpenApi.builder()
                 .group("API-Service")
-                .packagesToScan("com.hauhh.controller")
+                .packagesToScan("com.hauhh.controllers")
                 .build();
     }
 
