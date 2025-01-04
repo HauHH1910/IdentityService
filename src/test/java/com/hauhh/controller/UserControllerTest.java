@@ -1,9 +1,9 @@
 package com.hauhh.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hauhh.dto.request.UserCreationRequest;
-import com.hauhh.dto.response.UserResponse;
-import com.hauhh.service.UserService;
+import com.hauhh.controllers.request.UserCreationRequest;
+import com.hauhh.controllers.response.UserResponse;
+import com.hauhh.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
