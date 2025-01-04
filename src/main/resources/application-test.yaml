@@ -1,0 +1,32 @@
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    driver-class-name: org.h2.Driver
+    username: ${H2_USERNAME}
+    password: ${H2_PASSWORD}
+    url: ${H2_URL}
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+open:
+  api:
+    title: API Document
+    version: v1.0.0
+    description: Spring Boot API Document by HauHH
+    server:
+      url: http://localhost:${server.port}
+      description: Spring Boot
