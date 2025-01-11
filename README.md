@@ -11,3 +11,20 @@ This project for learning Spring Boot Development
 - Spring Security
 - Spring Data JPA
 - Swagger
+- H2 database
+- Docker Compose
+
+
+## TODO:
+- Github Actions
+- Kafka
+- Redist
+- MyBatis
+- WebSocket
+- Prometheus
+- Grafana
+- RabbitMQ
+- BatchJob
+- QR code
+- Jenkins
+- ELK 
