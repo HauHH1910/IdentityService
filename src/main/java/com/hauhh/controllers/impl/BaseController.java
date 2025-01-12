@@ -1,7 +1,6 @@
 package com.hauhh.controllers.impl;
 
 import com.hauhh.commons.ResponseData;
-import com.hauhh.controllers.BaseController;
 import com.hauhh.controllers.response.PageResponse;
 import com.hauhh.services.BaseService;
 import jakarta.validation.Valid;
@@ -13,17 +12,17 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C, U> {
+public abstract class BaseController<R, C, U> {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
 
     protected final BaseService<R, C, U> service;
 
-    public BaseControllerImpl(BaseService<R, C, U> service) {
+    public BaseController(BaseService<R, C, U> service) {
         this.service = service;
     }
 
-    @Override
+
     @PostMapping
     public ResponseData<R> create(@RequestBody @Valid C request) {
         LOGGER.info("[CREATE]");
@@ -34,7 +33,7 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @GetMapping
     public ResponseData<List<R>> getAll() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -48,7 +47,7 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @GetMapping("/info")
     public ResponseData<R> getMyInfo() {
         return ResponseData.<R>builder()
@@ -57,7 +56,7 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @GetMapping("/get/{id}")
     public ResponseData<R> get(@PathVariable String id) {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -71,7 +70,7 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @PutMapping("/{id}")
     public ResponseData<R> update(@PathVariable String id, @RequestBody U request) {
         return ResponseData.<R>builder()
@@ -80,7 +79,7 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @DeleteMapping("/{id}")
     public ResponseData<Void> delete(@PathVariable String id) {
         service.delete(id);
@@ -89,37 +88,37 @@ public abstract class BaseControllerImpl<R, C, U> implements BaseController<R, C
                 .build();
     }
 
-    @Override
+
     @GetMapping("/sort")
     public ResponseData<PageResponse<List<R>>> GetAllByUsingSortBy
             (@RequestParam(defaultValue = "0", required = false) int pageNo,
-                @Min(10) @RequestParam(defaultValue = "20") int pageSize,
-                @RequestParam(required = false) String sortBy) {
+             @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+             @RequestParam(required = false) String sortBy) {
         return ResponseData.<PageResponse<List<R>>>builder()
                 .message("Get all using sort")
                 .result(service.getUsingSort(pageNo, pageSize, sortBy))
                 .build();
     }
 
-    @Override
+
     @GetMapping("/criteria")
     public ResponseData<PageResponse<List<R>>> GetAllByUsingSortByMultipleColumn
             (@RequestParam(defaultValue = "0", required = false) int pageNo,
-                @Min(10) @RequestParam(defaultValue = "20") int pageSize,
-                @RequestParam(required = false) String... sortBy) {
+             @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+             @RequestParam(required = false) String... sortBy) {
         return ResponseData.<PageResponse<List<R>>>builder()
                 .message("Get all using criteria")
                 .result(service.getSortByMultipleColumn(pageNo, pageSize, sortBy))
                 .build();
     }
 
-    @Override
+
     @GetMapping("/specification")
     public ResponseData<PageResponse<List<R>>> GetAllByUsingSortByMultipleColumnAndSearch
             (@RequestParam(defaultValue = "0", required = false) int pageNo,
-                @RequestParam(defaultValue = "20") int pageSize,
-                @RequestParam(required = false) String search,
-                @RequestParam(required = false) String sortBy) {
+             @RequestParam(defaultValue = "20") int pageSize,
+             @RequestParam(required = false) String search,
+             @RequestParam(required = false) String sortBy) {
         return ResponseData.<PageResponse<List<R>>>builder()
                 .message("Get all using specification")
                 .result(service.getWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy))
