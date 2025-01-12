@@ -12,7 +12,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoleRequest implements Serializable {
+public class RoleCreationRequest implements Serializable {
 
     private String name;
 

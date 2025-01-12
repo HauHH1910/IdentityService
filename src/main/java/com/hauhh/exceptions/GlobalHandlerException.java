@@ -1,7 +1,7 @@
 package com.hauhh.exceptions;
 
 import com.hauhh.commons.ResponseError;
-import com.hauhh.models.enums.ErrorCode;
+import com.hauhh.models.enums.ErrorConstant;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,43 +20,43 @@ public class GlobalHandlerException {
 
     private static final String MIN_ATTRIBUTE = "min";
 
-    @ExceptionHandler(value = AppException.class)
-    public ResponseEntity<ResponseError> handleAppException(AppException appException) {
-        ErrorCode errorCode = appException.getErrorCode();
-        log.info("[handleAppException] Code: {}", errorCode.getCode());
-        log.info("[handleAppException] Message: {}", errorCode.getMessage());
-        return ResponseEntity.status(errorCode.getStatusCode())
+    @ExceptionHandler(value = BusinessException.class)
+    public ResponseEntity<ResponseError> handleAppException(BusinessException businessException) {
+        ErrorConstant errorConstant = businessException.getErrorConstant();
+        log.info("[handleAppException] Code: {}", errorConstant.getCode());
+        log.info("[handleAppException] Message: {}", errorConstant.getMessage());
+        return ResponseEntity.status(errorConstant.getStatusCode())
                 .body(ResponseError.builder()
-                        .code(errorCode.getCode())
-                        .message(errorCode.getMessage())
+                        .code(errorConstant.getCode())
+                        .message(errorConstant.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<ResponseError> handleAccessDeniedException() {
-        return ResponseEntity.status(ErrorCode.ACCESS_DENIED.getStatusCode())
+        return ResponseEntity.status(ErrorConstant.ACCESS_DENIED.getStatusCode())
                 .body(ResponseError.builder()
-                        .code(ErrorCode.ACCESS_DENIED.getCode())
-                        .message(ErrorCode.ACCESS_DENIED.getMessage())
+                        .code(ErrorConstant.ACCESS_DENIED.getCode())
+                        .message(ErrorConstant.ACCESS_DENIED.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = SQLIntegrityConstraintViolationException.class)
     public ResponseEntity<ResponseError> handleSQLIntegrityConstraintViolationException() {
-        return ResponseEntity.status(ErrorCode.PERMISSION_IS_USED.getStatusCode())
+        return ResponseEntity.status(ErrorConstant.PERMISSION_IS_USED.getStatusCode())
                 .body(ResponseError.builder()
-                        .code(ErrorCode.PERMISSION_IS_USED.getCode())
-                        .message(ErrorCode.PERMISSION_IS_USED.getMessage())
+                        .code(ErrorConstant.PERMISSION_IS_USED.getCode())
+                        .message(ErrorConstant.PERMISSION_IS_USED.getMessage())
                         .build());
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseError> handleValidation(MethodArgumentNotValidException exception) {
         String enumKey = Objects.requireNonNull(exception.getFieldError()).getDefaultMessage();
-        ErrorCode errorCode = ErrorCode.INVALID_KEY;
+        ErrorConstant errorConstant = ErrorConstant.INVALID_KEY;
         Map<String, Object> attributes = null;
         try {
-            errorCode = ErrorCode.valueOf(enumKey);
+            errorConstant = ErrorConstant.valueOf(enumKey);
 
 
          var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
@@ -69,14 +69,14 @@ public class GlobalHandlerException {
             log.error("[handleValidation] Error IllegalArgumentException: {}", e.getMessage());
         }
 
-        log.info("[handleValidation] Code: {}", errorCode.getCode());
-        log.info("[handleValidation] Message: {}", errorCode.getMessage());
+        log.info("[handleValidation] Code: {}", errorConstant.getCode());
+        log.info("[handleValidation] Message: {}", errorConstant.getMessage());
 
-        return ResponseEntity.status(errorCode.getStatusCode())
+        return ResponseEntity.status(errorConstant.getStatusCode())
                 .body(ResponseError.builder()
-                        .code(errorCode.getCode())
+                        .code(errorConstant.getCode())
                         .message(Objects.nonNull(attributes) ?
-                                mapAttribute(errorCode.getMessage(), attributes) : errorCode.getMessage())
+                                mapAttribute(errorConstant.getMessage(), attributes) : errorConstant.getMessage())
                         .build());
     }
 

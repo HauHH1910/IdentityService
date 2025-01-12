@@ -1,8 +1,8 @@
 package com.hauhh.configurations;
 
 import com.hauhh.controllers.request.IntrospectRequest;
-import com.hauhh.models.enums.ErrorCode;
-import com.hauhh.exceptions.AppException;
+import com.hauhh.models.enums.ErrorConstant;
+import com.hauhh.exceptions.BusinessException;
 import com.hauhh.services.AuthenticationService;
 import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +38,7 @@ public class CustomJWTDecoder implements JwtDecoder {
                     .token(token)
                     .build());
             if(!response.isValid()){
-                throw new AppException(ErrorCode.INVALID_TOKEN);
+                throw new BusinessException(ErrorConstant.INVALID_TOKEN);
             }
         } catch (JOSEException | ParseException e) {
             throw new RuntimeException(e);

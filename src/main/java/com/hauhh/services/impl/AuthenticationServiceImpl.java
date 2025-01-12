@@ -9,8 +9,8 @@ import com.hauhh.controllers.response.IntrospectResponse;
 import com.hauhh.controllers.response.RefreshResponse;
 import com.hauhh.models.InvalidateToken;
 import com.hauhh.models.User;
-import com.hauhh.models.enums.ErrorCode;
-import com.hauhh.exceptions.AppException;
+import com.hauhh.models.enums.ErrorConstant;
+import com.hauhh.exceptions.BusinessException;
 import com.hauhh.repositories.InvalidateTokenRepository;
 import com.hauhh.repositories.UserRepository;
 import com.hauhh.services.AuthenticationService;
@@ -57,11 +57,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-        User user = userRepository.findByUsername(authenticationRequest.getUsername()).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        User user = userRepository.findByUsername(authenticationRequest.getUsername()).orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
         boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
 
         if (!authenticated) {
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new BusinessException(ErrorConstant.UNAUTHENTICATED);
         }
 
         var token = generateToken(user);
@@ -82,7 +82,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         try {
             verifyToken(token, false);
-        } catch (AppException e) {
+        } catch (BusinessException e) {
             isValid = false;
         }
         return IntrospectResponse.builder()
@@ -106,7 +106,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             tokenRepository.save(invalidateToken);
 
-        } catch (AppException e) {
+        } catch (BusinessException e) {
             log.info("Token already expired");
         }
 
@@ -130,7 +130,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         var username = signJWT.getJWTClaimsSet().getSubject();
 
-        var user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+        var user = userRepository.findByUsername(username).orElseThrow(() -> new BusinessException(ErrorConstant.UNAUTHENTICATED));
 
         var token = generateToken(user);
 
@@ -179,10 +179,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var verifyToken = signedJWT.verify(verifier);
 
         if (!(verifyToken && expirationTime.after(new Date())))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new BusinessException(ErrorConstant.UNAUTHENTICATED);
 
         if (tokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
+            throw new BusinessException(ErrorConstant.UNAUTHENTICATED);
 
         return signedJWT;
     }

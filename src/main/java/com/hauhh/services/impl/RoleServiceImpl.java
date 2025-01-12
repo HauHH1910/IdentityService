@@ -1,16 +1,15 @@
 package com.hauhh.services.impl;
 
-import com.hauhh.controllers.request.RoleRequest;
+import com.hauhh.controllers.request.RoleCreationRequest;
+import com.hauhh.controllers.request.RoleUpdateRequest;
 import com.hauhh.controllers.response.RoleResponse;
+import com.hauhh.exceptions.BusinessException;
 import com.hauhh.mappers.RoleMapper;
+import com.hauhh.models.enums.ErrorConstant;
 import com.hauhh.repositories.PermissionRepository;
 import com.hauhh.repositories.RoleRepository;
-import com.hauhh.services.RoleService;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -18,17 +17,19 @@ import java.util.List;
 
 @Slf4j
 @Service
-@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @RequiredArgsConstructor
-public class RoleServiceImpl implements RoleService {
+public class RoleServiceImpl extends BaseServiceImpl<
+        RoleResponse,
+        RoleCreationRequest,
+        RoleUpdateRequest
+> {
 
-    RoleRepository roleRepository;
-    RoleMapper roleMapper;
-    PermissionRepository permissionRepository;
+    private final RoleRepository roleRepository;
+    private final RoleMapper roleMapper;
+    private final PermissionRepository permissionRepository;
 
     @Override
-    @PreAuthorize("hasRole('ADMIN')")
-    public RoleResponse createRole(RoleRequest request) {
+    public RoleResponse create(RoleCreationRequest request) {
         var role = roleMapper.toRole(request);
 
         var permissions = permissionRepository.findAllById(request.getPermissions());
@@ -39,7 +40,26 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<RoleResponse> getAllRoles() {
+    public RoleResponse update(String id, RoleUpdateRequest request) {
+        var role = roleRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
+
+        roleMapper.updateRole(role, request);
+
+        return roleMapper.toRoleResponse(roleRepository.save(role));
+    }
+
+    @Override
+    public void delete(String id) {
+        roleRepository.findById(id).ifPresentOrElse(
+                roleRepository::delete,
+                () -> {
+                    throw new BusinessException(ErrorConstant.ROLE_NOT_FOUND);
+                }
+        );
+    }
+
+    @Override
+    public List<RoleResponse> findAll() {
         return roleRepository.findAll()
                 .stream()
                 .map(roleMapper::toRoleResponse)
@@ -47,7 +67,9 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void deleteRole(String role) {
-        roleRepository.deleteById(role);
+    public RoleResponse findByID(String id) {
+        return roleRepository.findById(id)
+                .map(roleMapper::toRoleResponse)
+                .orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
     }
 }
