@@ -3,11 +3,9 @@ package com.hauhh.services.impl;
 import com.hauhh.controllers.request.RoleCreationRequest;
 import com.hauhh.controllers.request.RoleUpdateRequest;
 import com.hauhh.controllers.response.RoleResponse;
-import com.hauhh.exceptions.AppException;
+import com.hauhh.exceptions.BusinessException;
 import com.hauhh.mappers.RoleMapper;
-import com.hauhh.models.User;
-import com.hauhh.models.enums.ErrorCode;
-import com.hauhh.models.enums.Role;
+import com.hauhh.models.enums.ErrorConstant;
 import com.hauhh.repositories.PermissionRepository;
 import com.hauhh.repositories.RoleRepository;
 import lombok.RequiredArgsConstructor;
@@ -43,7 +41,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
 
     @Override
     public RoleResponse update(String id, RoleUpdateRequest request) {
-        var role = roleRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+        var role = roleRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
 
         roleMapper.updateRole(role, request);
 
@@ -55,7 +53,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
         roleRepository.findById(id).ifPresentOrElse(
                 roleRepository::delete,
                 () -> {
-                    throw new AppException(ErrorCode.ROLE_NOT_FOUND);
+                    throw new BusinessException(ErrorConstant.ROLE_NOT_FOUND);
                 }
         );
     }
@@ -72,6 +70,6 @@ public class RoleServiceImpl extends BaseServiceImpl<
     public RoleResponse findByID(String id) {
         return roleRepository.findById(id)
                 .map(roleMapper::toRoleResponse)
-                .orElseThrow(() -> new AppException(ErrorCode.ROLE_NOT_FOUND));
+                .orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
     }
 }

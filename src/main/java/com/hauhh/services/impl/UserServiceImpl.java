@@ -5,13 +5,12 @@ import com.hauhh.controllers.request.UserUpdateRequest;
 import com.hauhh.controllers.response.PageResponse;
 import com.hauhh.controllers.response.UserDetailResponse;
 import com.hauhh.models.User;
-import com.hauhh.models.enums.ErrorCode;
-import com.hauhh.exceptions.AppException;
+import com.hauhh.models.enums.ErrorConstant;
+import com.hauhh.exceptions.BusinessException;
 import com.hauhh.mappers.UserMapper;
 import com.hauhh.repositories.RoleRepository;
 import com.hauhh.repositories.SearchRepository;
 import com.hauhh.repositories.UserRepository;
-import com.hauhh.services.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -47,7 +46,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
         log.info("Create User");
 
         if (userRepository.existsByUsername(request.getUsername()))
-            throw new AppException(ErrorCode.USER_EXIST);
+            throw new BusinessException(ErrorConstant.USER_EXIST);
 
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -56,7 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
 
     @Override
     public UserDetailResponse update(String id, UserUpdateRequest request) {
-        User user = userRepository.findById(id).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+        User user = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
 
         userMapper.updateUser(user, request);
 
@@ -74,7 +73,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
         userRepository.findById(id)
                 .ifPresentOrElse(userRepository::delete,
                         () -> {
-                            throw new AppException(ErrorCode.USER_NOT_EXIST);
+                            throw new BusinessException(ErrorConstant.USER_NOT_EXIST);
                         });
     }
 
@@ -82,7 +81,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     public UserDetailResponse findByID(String id) {
         log.info("In method findUserByID");
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+                .orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
         return userMapper.toUserResponse(user);
     }
 
@@ -103,7 +102,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
 
         User user = userRepository
                 .findByUsername(name)
-                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXIST));
+                .orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
 
         return userMapper
                 .toUserResponse(user);

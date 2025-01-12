@@ -1,4 +1,4 @@
-package com.hauhh.controllers.impl;
+package com.hauhh.controllers;
 
 import com.hauhh.commons.ResponseData;
 import com.hauhh.controllers.response.PageResponse;

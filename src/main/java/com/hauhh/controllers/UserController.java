@@ -1,4 +1,4 @@
-package com.hauhh.controllers.impl;
+package com.hauhh.controllers;
 
 import com.hauhh.controllers.request.UserCreationRequest;
 import com.hauhh.controllers.request.UserUpdateRequest;
