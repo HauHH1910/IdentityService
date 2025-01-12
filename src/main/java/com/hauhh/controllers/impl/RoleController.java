@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "Role Controller")
 @RequestMapping("/api/roles")
-public class RoleController extends BaseControllerImpl<RoleResponse, RoleCreationRequest, RoleUpdateRequest> {
+public class RoleController extends BaseController<RoleResponse, RoleCreationRequest, RoleUpdateRequest> {
 
     public RoleController(BaseServiceImpl<RoleResponse, RoleCreationRequest, RoleUpdateRequest> service) {
         super(service);

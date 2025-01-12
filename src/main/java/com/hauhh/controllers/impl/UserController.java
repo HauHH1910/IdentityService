@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Tag(name = "User Controller")
 @RequestMapping("/api/users")
-public class UserController extends BaseControllerImpl<UserDetailResponse, UserCreationRequest, UserUpdateRequest> {
+public class UserController extends BaseController<UserDetailResponse, UserCreationRequest, UserUpdateRequest> {
 
     public UserController(BaseServiceImpl<UserDetailResponse, UserCreationRequest, UserUpdateRequest> service) {
         super(service);
