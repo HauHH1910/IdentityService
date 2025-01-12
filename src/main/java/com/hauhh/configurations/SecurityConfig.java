@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,7 +14,6 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-//@EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
 
@@ -26,25 +24,44 @@ public class SecurityConfig {
             "/api/auth/token", "/api/auth/introspect", "/api/auth/logout", "/api/auth/refresh", "/api/user/sort/**"
     };
 
+    private final String[] PRIVATE_ENDPOINTS = {
+            "/actuator/**", "/v3/**", "/swagger-ui/**", "/swagger-resources/**", "/webjars/**"
+    };
+
     private CustomJWTDecoder customJwtDecoder;
 
+    /**
+     * Configuration for private endpoints like /actuator, /swagger
+     */
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain actuatorSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher(PRIVATE_ENDPOINTS)
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests.anyRequest()
+                                .permitAll());
+        return http.build();
+    }
 
-        httpSecurity.authorizeHttpRequests(requests ->
+    /**
+     * Configuration for public endpoints like login, logout
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.authorizeHttpRequests(requests ->
                 requests.requestMatchers(HttpMethod.POST, PUBLIC_ENDPOINTS)
                         .permitAll()
                         .anyRequest()
                         .authenticated());
 
-        httpSecurity.oauth2ResourceServer(oath2 -> oath2.jwt(jwtConfig -> jwtConfig
-                .decoder(customJwtDecoder)
-                .jwtAuthenticationConverter(jwtAuthenticationConverter())
-        ).authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
+        http.oauth2ResourceServer(oath2 ->
+                oath2.jwt(jwtConfig -> jwtConfig
+                        .decoder(customJwtDecoder)
+                        .jwtAuthenticationConverter(jwtAuthenticationConverter())
+                ).authenticationEntryPoint(new JwtAuthenticationEntryPoint()));
 
-        httpSecurity.csrf(AbstractHttpConfigurer::disable);
+        http.csrf(AbstractHttpConfigurer::disable);
 
-        return httpSecurity.build();
+        return http.build();
     }
 
     @Bean
@@ -61,15 +78,4 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(10);
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return webSecurity -> {
-            webSecurity.ignoring()
-                    .requestMatchers("/actuator/**",
-                            "/v3/**",
-                            "/swagger-ui/**",
-                            "/swagger-resources/**",
-                            "/webjars/**");
-        };
-    }
 }
