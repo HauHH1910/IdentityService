@@ -7,13 +7,12 @@ spring:
     username: ${MYSQLDB_USER}
     password: ${MYSQL_ROOT_PASSWORD}
   jpa:
-    database-platform: org.hibernate.dialect.MySQLDialect
     hibernate:
       ddl-auto: update
     show-sql: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: false
   sql:
     init:
       mode: always
