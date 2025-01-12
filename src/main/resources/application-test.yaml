@@ -30,3 +30,9 @@ open:
     server:
       url: http://localhost:${server.port}
       description: Spring Boot
+
+com:
+  hauhh:
+    key: ${KEY_TEST}
+    valid-duration: ${KEY_DURATION_TEST} # in seconds
+    refreshable-duration: ${KEY_REFRESHABLE_DURATION_TEST}

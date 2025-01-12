@@ -33,3 +33,9 @@ open:
     server:
       url: http://localhost:8080
       description: Spring Boot
+
+com:
+  hauhh:
+    key: ${KEY_DEV}
+    valid-duration: ${KEY_DURATION_DEV} # in seconds
+    refreshable-duration: ${KEY_REFRESHABLE_DURATION_DEV}
