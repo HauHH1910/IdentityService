@@ -17,6 +17,7 @@ This project for learning Spring Boot Development
 
 ## TODO:
 - Github Actions
+- I18N
 - Kafka
 - Redist
 - MyBatis
