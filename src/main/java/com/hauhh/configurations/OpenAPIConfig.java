@@ -29,7 +29,7 @@ public class OpenAPIConfig {
                 .description(descriptionDocument)
                 .license(new License()
                         .name("API License")
-                        .url("https://github.com/HauHH1910/Spring-Boot"))
+                        .url("https://github.com/HauHH1910/IdentityService"))
         ).servers(List.of(new Server()
                 .url(serverDocument)
                 .description(serverDescriptionDocument)
