@@ -1,7 +1,6 @@
 package com.hauhh.exceptions;
 
 import com.hauhh.commons.ResponseError;
-import com.hauhh.configurations.LocalResolver;
 import com.hauhh.configurations.Translator;
 import com.hauhh.models.enums.ErrorConstant;
 import jakarta.validation.ConstraintViolation;

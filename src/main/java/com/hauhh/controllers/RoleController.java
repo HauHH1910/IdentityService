@@ -2,6 +2,7 @@ package com.hauhh.controllers;
 
 
 import com.hauhh.commons.ResponseData;
+import com.hauhh.configurations.Translator;
 import com.hauhh.controllers.request.RoleCreationRequest;
 import com.hauhh.controllers.request.RoleUpdateRequest;
 import com.hauhh.controllers.response.RoleResponse;
@@ -28,7 +29,7 @@ public class RoleController {
         log.info("[CREATE]");
         return ResponseData.<RoleResponse>builder()
                 .code(1000)
-                .message("Created")
+                .message(Translator.toLocale("role.created"))
                 .result(roleService.createRole(request))
                 .build();
     }
@@ -37,7 +38,7 @@ public class RoleController {
     public ResponseData<List<RoleResponse>> getAll() {
         log.info("[Get all roles]");
         return ResponseData.<List<RoleResponse>>builder()
-                .message("Get all")
+                .message(Translator.toLocale("role.get.all"))
                 .result(roleService.findAllRole())
                 .build();
     }
@@ -45,7 +46,7 @@ public class RoleController {
     @GetMapping("/{id}")
     public ResponseData<RoleResponse> getRoleById(@PathVariable String id) {
         return ResponseData.<RoleResponse>builder()
-                .message("get role")
+                .message(Translator.toLocale("role.get"))
                 .result(roleService.findRoleByID(id))
                 .build();
     }
@@ -53,7 +54,7 @@ public class RoleController {
     @PutMapping("/{id}")
     public ResponseData<RoleResponse> update(@PathVariable String id, @RequestBody RoleUpdateRequest request) {
         return ResponseData.<RoleResponse>builder()
-                .message("Update user")
+                .message(Translator.toLocale("role.update"))
                 .result(roleService.updateRole(id, request))
                 .build();
     }
@@ -62,7 +63,7 @@ public class RoleController {
     public ResponseData<Void> delete(@PathVariable String id) {
         roleService.deleteRole(id);
         return ResponseData.<Void>builder()
-                .message("Deleted")
+                .message(Translator.toLocale("role.delete"))
                 .build();
     }
 }
