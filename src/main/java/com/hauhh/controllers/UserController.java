@@ -1,6 +1,7 @@
 package com.hauhh.controllers;
 
 import com.hauhh.commons.ResponseData;
+import com.hauhh.configurations.Translator;
 import com.hauhh.controllers.request.UserCreationRequest;
 import com.hauhh.controllers.request.UserUpdateRequest;
 import com.hauhh.controllers.response.PageResponse;
@@ -31,8 +32,7 @@ public class UserController {
     public ResponseData<UserDetailResponse> create(@RequestBody @Valid UserCreationRequest request) {
         log.info("Create user");
         return ResponseData.<UserDetailResponse>builder()
-                .code(1000)
-                .message("Created")
+                .message(Translator.toLocale("user.created"))
                 .result(userService.createUser(request))
                 .build();
     }
@@ -45,7 +45,7 @@ public class UserController {
         log.info("Role: {}", authentication.getAuthorities().stream().toList());
 
         return ResponseData.<List<UserDetailResponse>>builder()
-                .message("Get all users")
+                .message(Translator.toLocale("user.get.all"))
                 .result(userService.findAllUser())
                 .build();
     }
@@ -53,7 +53,7 @@ public class UserController {
     @GetMapping("/info")
     public ResponseData<UserDetailResponse> getMyInfo() {
         return ResponseData.<UserDetailResponse>builder()
-                .message("Get info")
+                .message(Translator.toLocale("user.info"))
                 .result(userService.getUser())
                 .build();
     }
@@ -66,7 +66,7 @@ public class UserController {
         log.info("Role when get User: {}", authentication.getAuthorities().stream().toList());
 
         return ResponseData.<UserDetailResponse>builder()
-                .message("Get info")
+                .message(Translator.toLocale("user.get"))
                 .result(userService.findUserByID(id))
                 .build();
     }
@@ -74,7 +74,7 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseData<UserDetailResponse> update(@PathVariable String id, @RequestBody UserUpdateRequest request) {
         return ResponseData.<UserDetailResponse>builder()
-                .message("Update user")
+                .message(Translator.toLocale("user.update"))
                 .result(userService.updateUser(id, request))
                 .build();
     }
@@ -83,7 +83,7 @@ public class UserController {
     public ResponseData<Void> delete(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseData.<Void>builder()
-                .message("Deleted")
+                .message(Translator.toLocale("user.delete"))
                 .build();
     }
 
@@ -95,7 +95,7 @@ public class UserController {
                     @RequestParam(required = false) String sortBy
             ) {
         return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
-                .message("Get all using sort")
+                .message(Translator.toLocale("user.sort"))
                 .result(userService.getUserUsingSort(pageNo, pageSize, sortBy))
                 .build();
     }
@@ -109,7 +109,7 @@ public class UserController {
                     @RequestParam(required = false) String... sortBy
             ) {
         return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
-                .message("Get all using criteria")
+                .message(Translator.toLocale("user.criteria"))
                 .result(userService.getUserSortByMultipleColumn(pageNo, pageSize, sortBy))
                 .build();
     }
@@ -124,7 +124,7 @@ public class UserController {
                     @RequestParam(required = false) String sortBy
             ) {
         return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
-                .message("Get all using specification")
+                .message(Translator.toLocale("user.specification"))
                 .result(userService.getUserWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy))
                 .build();
     }
