@@ -8,6 +8,7 @@ import com.hauhh.mappers.RoleMapper;
 import com.hauhh.models.enums.ErrorConstant;
 import com.hauhh.repositories.PermissionRepository;
 import com.hauhh.repositories.RoleRepository;
+import com.hauhh.services.RoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,18 +19,14 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class RoleServiceImpl extends BaseServiceImpl<
-        RoleResponse,
-        RoleCreationRequest,
-        RoleUpdateRequest
-> {
+public class RoleServiceImpl implements RoleService {
 
     private final RoleRepository roleRepository;
     private final RoleMapper roleMapper;
     private final PermissionRepository permissionRepository;
 
     @Override
-    public RoleResponse create(RoleCreationRequest request) {
+    public RoleResponse createRole(RoleCreationRequest request) {
         var role = roleMapper.toRole(request);
 
         var permissions = permissionRepository.findAllById(request.getPermissions());
@@ -40,7 +37,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
     }
 
     @Override
-    public RoleResponse update(String id, RoleUpdateRequest request) {
+    public RoleResponse updateRole(String id, RoleUpdateRequest request) {
         var role = roleRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
 
         roleMapper.updateRole(role, request);
@@ -49,7 +46,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
     }
 
     @Override
-    public void delete(String id) {
+    public void deleteRole(String id) {
         roleRepository.findById(id).ifPresentOrElse(
                 roleRepository::delete,
                 () -> {
@@ -59,7 +56,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
     }
 
     @Override
-    public List<RoleResponse> findAll() {
+    public List<RoleResponse> findAllRole() {
         return roleRepository.findAll()
                 .stream()
                 .map(roleMapper::toRoleResponse)
@@ -67,7 +64,7 @@ public class RoleServiceImpl extends BaseServiceImpl<
     }
 
     @Override
-    public RoleResponse findByID(String id) {
+    public RoleResponse findRoleByID(String id) {
         return roleRepository.findById(id)
                 .map(roleMapper::toRoleResponse)
                 .orElseThrow(() -> new BusinessException(ErrorConstant.ROLE_NOT_FOUND));
