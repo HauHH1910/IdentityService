@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 @Repository
 public class SearchRepository {
 
+    private final static String REGEX_SORT_BY = "(\\w+?)(:)(.*)";
+    private final static String LIKE_FORMAT = "%%%s%%";
+
     @PersistenceContext
     private EntityManager entityManager;
-
-    private final String LIKE_FORMAT = "%%%s%%";
-    private final String REGEX_SORT_BY = "(\\w+?)(:)(.*)";
 
     public PageResponse<List<UserDetailResponse>> getAllUserWithSortByMultipleColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
         StringBuilder sqlQuery = new StringBuilder("SELECT new com.hauhh.dto.response.UserDetailResponse(u.id, u.username, u.firstName, u.lastName, u.dob) FROM User u WHERE 1=1");
