@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatusCode;
 @Getter
 @AllArgsConstructor
 public enum ErrorConstant {
-    USER_EXIST(1001, "User already exists", HttpStatus.BAD_REQUEST),
+    USER_EXIST(1001, "user.exist", HttpStatus.BAD_REQUEST),
     USER_NOT_EXIST(1002, "User does not exist", HttpStatus.NOT_FOUND),
     UNAUTHENTICATED(1003, "Unauthenticated", HttpStatus.UNAUTHORIZED),
     UNCATEGORIZED(1004, "Unauthorized", HttpStatus.INTERNAL_SERVER_ERROR),
