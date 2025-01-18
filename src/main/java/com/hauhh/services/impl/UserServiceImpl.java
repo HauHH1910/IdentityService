@@ -11,6 +11,7 @@ import com.hauhh.mappers.UserMapper;
 import com.hauhh.repositories.RoleRepository;
 import com.hauhh.repositories.SearchRepository;
 import com.hauhh.repositories.UserRepository;
+import com.hauhh.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,7 +32,7 @@ import java.util.regex.Pattern;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCreationRequest, UserUpdateRequest>{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -39,10 +40,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     private final RoleRepository roleRepository;
     private final SearchRepository searchRepository;
 
-    private final String REGEX_SORT_BY = "(\\w+?)(:)(.*)";
+    private static final String REGEX_SORT_BY = "(\\w+?)(:)(.*)";
 
     @Override
-    public UserDetailResponse create(UserCreationRequest request) {
+    public UserDetailResponse createUser(UserCreationRequest request) {
         log.info("Create User");
 
         if (userRepository.existsByUsername(request.getUsername()))
@@ -54,7 +55,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public UserDetailResponse update(String id, UserUpdateRequest request) {
+    public UserDetailResponse updateUser(String id, UserUpdateRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
 
         userMapper.updateUser(user, request);
@@ -69,7 +70,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public void delete(String id) {
+    public void deleteUser(String id) {
         userRepository.findById(id)
                 .ifPresentOrElse(userRepository::delete,
                         () -> {
@@ -78,7 +79,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public UserDetailResponse findByID(String id) {
+    public UserDetailResponse findUserByID(String id) {
         log.info("In method findUserByID");
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessException(ErrorConstant.USER_NOT_EXIST));
@@ -86,7 +87,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public List<UserDetailResponse> findAll() {
+    public List<UserDetailResponse> findAllUser() {
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toUserResponse)
@@ -94,7 +95,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public UserDetailResponse get() {
+    public UserDetailResponse getUser() {
         String name = SecurityContextHolder
                 .getContext()
                 .getAuthentication()
@@ -109,7 +110,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getUsingSort(int pageNo, int pageSize, String sortBy) {
+    public PageResponse<List<UserDetailResponse>> getUserUsingSort(int pageNo, int pageSize, String sortBy) {
         int defaultValuePage = 0;
         if (pageNo > 0) {
             defaultValuePage = pageNo - 1;
@@ -152,7 +153,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getSortByMultipleColumn(int pageNo, int pageSize, String... sortBy) {
+    public PageResponse<List<UserDetailResponse>> getUserSortByMultipleColumn(int pageNo, int pageSize, String... sortBy) {
         if (pageNo > 0) {
             pageNo = pageNo - 1;
         }
@@ -194,7 +195,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserDetailResponse, UserCre
     }
 
     @Override
-    public PageResponse<List<UserDetailResponse>> getWithSortByMultipleColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
+    public PageResponse<List<UserDetailResponse>> getUserWithSortByMultipleColumnAndSearch(int pageNo, int pageSize, String search, String sortBy) {
         return searchRepository.getAllUserWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy);
     }
 }
