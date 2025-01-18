@@ -1,6 +1,7 @@
 package com.hauhh.controllers;
 
 import com.hauhh.commons.ResponseData;
+import com.hauhh.configurations.Translator;
 import com.hauhh.controllers.request.AuthenticationRequest;
 import com.hauhh.controllers.request.IntrospectRequest;
 import com.hauhh.controllers.request.LogoutRequest;
@@ -40,7 +41,7 @@ public class AuthenticationController {
         log.info("Attempting to authenticate user: {}", request.getUsername());
         log.info("Attempting to authenticate user password: {}", request.getPassword());
         return ResponseData.<AuthenticationResponse>builder()
-                .message("Login success")
+                .message(Translator.toLocale("auth.login"))
                 .result(authenticationService.authenticate(request))
                 .build();
     }
@@ -52,7 +53,7 @@ public class AuthenticationController {
     @PostMapping("/introspect")
     public ResponseData<IntrospectResponse> authenticate(@RequestBody IntrospectRequest request) throws ParseException, JOSEException {
         return ResponseData.<IntrospectResponse>builder()
-                .message("Introspect successful")
+                .message(Translator.toLocale("auth.introspect"))
                 .result(authenticationService.introspect(request))
                 .build();
     }
@@ -65,7 +66,7 @@ public class AuthenticationController {
     public ResponseData<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
         authenticationService.logout(request);
         return ResponseData.<Void>builder()
-                .message("Logout successful")
+                .message(Translator.toLocale("auth.logout"))
                 .build();
     }
 
@@ -76,7 +77,7 @@ public class AuthenticationController {
     @PostMapping("/refresh")
     public ResponseData<RefreshResponse> refresh(@RequestBody RefreshRequest request) throws ParseException, JOSEException {
         return ResponseData.<RefreshResponse>builder()
-                .message("Refresh successful")
+                .message(Translator.toLocale("auth.refresh"))
                 .result(authenticationService.refreshToken(request))
                 .build();
     }

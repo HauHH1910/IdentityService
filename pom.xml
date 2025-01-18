@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.hauhh</groupId>
-    <artifactId>SpringBoot</artifactId>
+    <artifactId>IdentityService</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>SpringBootTutorial</name>
     <description>SpringBootTutorial</description>

@@ -1,6 +1,7 @@
 package com.hauhh.exceptions;
 
 import com.hauhh.commons.ResponseError;
+import com.hauhh.configurations.Translator;
 import com.hauhh.models.enums.ErrorConstant;
 import jakarta.validation.ConstraintViolation;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,7 @@ public class GlobalHandlerException {
         return ResponseEntity.status(errorConstant.getStatusCode())
                 .body(ResponseError.builder()
                         .code(errorConstant.getCode())
-                        .message(errorConstant.getMessage())
+                        .message(Translator.toLocale(errorConstant.getMessage()))
                         .build());
     }
 
@@ -37,7 +38,7 @@ public class GlobalHandlerException {
         return ResponseEntity.status(ErrorConstant.ACCESS_DENIED.getStatusCode())
                 .body(ResponseError.builder()
                         .code(ErrorConstant.ACCESS_DENIED.getCode())
-                        .message(ErrorConstant.ACCESS_DENIED.getMessage())
+                        .message(Translator.toLocale(ErrorConstant.ACCESS_DENIED.getMessage()))
                         .build());
     }
 
@@ -46,7 +47,7 @@ public class GlobalHandlerException {
         return ResponseEntity.status(ErrorConstant.PERMISSION_IS_USED.getStatusCode())
                 .body(ResponseError.builder()
                         .code(ErrorConstant.PERMISSION_IS_USED.getCode())
-                        .message(ErrorConstant.PERMISSION_IS_USED.getMessage())
+                        .message(Translator.toLocale(ErrorConstant.PERMISSION_IS_USED.getMessage()))
                         .build());
     }
 
@@ -59,7 +60,7 @@ public class GlobalHandlerException {
             errorConstant = ErrorConstant.valueOf(enumKey);
 
 
-         var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
+            var constraintViolation = exception.getBindingResult().getAllErrors().get(0).unwrap(ConstraintViolation.class);
 
             attributes = constraintViolation.getConstraintDescriptor().getAttributes();
 
@@ -75,8 +76,14 @@ public class GlobalHandlerException {
         return ResponseEntity.status(errorConstant.getStatusCode())
                 .body(ResponseError.builder()
                         .code(errorConstant.getCode())
-                        .message(Objects.nonNull(attributes) ?
-                                mapAttribute(errorConstant.getMessage(), attributes) : errorConstant.getMessage())
+                        .message(
+                                Translator.toLocale(
+                                        Objects.nonNull(attributes) ?
+                                                mapAttribute(errorConstant.getMessage(), attributes)
+                                                :
+                                                errorConstant.getMessage()
+                                )
+                        )
                         .build());
     }
 

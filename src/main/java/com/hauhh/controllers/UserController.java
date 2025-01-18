@@ -1,23 +1,132 @@
 package com.hauhh.controllers;
 
+import com.hauhh.commons.ResponseData;
+import com.hauhh.configurations.Translator;
 import com.hauhh.controllers.request.UserCreationRequest;
 import com.hauhh.controllers.request.UserUpdateRequest;
+import com.hauhh.controllers.response.PageResponse;
 import com.hauhh.controllers.response.UserDetailResponse;
-import com.hauhh.services.impl.BaseServiceImpl;
+import com.hauhh.services.UserService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
-@RestController
-@Tag(name = "User Controller")
-@RequestMapping("/api/users")
-public class UserController extends BaseController<UserDetailResponse, UserCreationRequest, UserUpdateRequest> {
+import java.util.List;
 
-    public UserController(BaseServiceImpl<UserDetailResponse, UserCreationRequest, UserUpdateRequest> service) {
-        super(service);
+@RestController
+@RequiredArgsConstructor
+@Tag(name = "User Controller")
+@Slf4j(topic = "User Controller")
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserService userService;
+
+    @PostMapping
+    @Operation(summary = "Create new user", description = "This API used to create new user")
+    public ResponseData<UserDetailResponse> create(@RequestBody @Valid UserCreationRequest request) {
+        log.info("Create user");
+        return ResponseData.<UserDetailResponse>builder()
+                .message(Translator.toLocale("user.created"))
+                .result(userService.createUser(request))
+                .build();
+    }
+
+    @GetMapping
+    public ResponseData<List<UserDetailResponse>> getAll() {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("User: {}", authentication.getName());
+        log.info("Role: {}", authentication.getAuthorities().stream().toList());
+
+        return ResponseData.<List<UserDetailResponse>>builder()
+                .message(Translator.toLocale("user.get.all"))
+                .result(userService.findAllUser())
+                .build();
+    }
+
+    @GetMapping("/info")
+    public ResponseData<UserDetailResponse> getMyInfo() {
+        return ResponseData.<UserDetailResponse>builder()
+                .message(Translator.toLocale("user.info"))
+                .result(userService.getUser())
+                .build();
+    }
+
+    @GetMapping("/{id}")
+    public ResponseData<UserDetailResponse> get(@PathVariable String id) {
+        var authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        log.info("Username: {}", authentication.getName());
+        log.info("Role when get User: {}", authentication.getAuthorities().stream().toList());
+
+        return ResponseData.<UserDetailResponse>builder()
+                .message(Translator.toLocale("user.get"))
+                .result(userService.findUserByID(id))
+                .build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseData<UserDetailResponse> update(@PathVariable String id, @RequestBody UserUpdateRequest request) {
+        return ResponseData.<UserDetailResponse>builder()
+                .message(Translator.toLocale("user.update"))
+                .result(userService.updateUser(id, request))
+                .build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseData<Void> delete(@PathVariable String id) {
+        userService.deleteUser(id);
+        return ResponseData.<Void>builder()
+                .message(Translator.toLocale("user.delete"))
+                .build();
+    }
+
+    @GetMapping("/sort")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllByUsingSortBy
+            (
+                    @RequestParam(defaultValue = "0", required = false) int pageNo,
+                    @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+                    @RequestParam(required = false) String sortBy
+            ) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message(Translator.toLocale("user.sort"))
+                .result(userService.getUserUsingSort(pageNo, pageSize, sortBy))
+                .build();
     }
 
 
+    @GetMapping("/criteria")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllByUsingSortByMultipleColumn
+            (
+                    @RequestParam(defaultValue = "0", required = false) int pageNo,
+                    @Min(10) @RequestParam(defaultValue = "20") int pageSize,
+                    @RequestParam(required = false) String... sortBy
+            ) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message(Translator.toLocale("user.criteria"))
+                .result(userService.getUserSortByMultipleColumn(pageNo, pageSize, sortBy))
+                .build();
+    }
+
+
+    @GetMapping("/specification")
+    public ResponseData<PageResponse<List<UserDetailResponse>>> GetAllByUsingSortByMultipleColumnAndSearch
+            (
+                    @RequestParam(defaultValue = "0", required = false) int pageNo,
+                    @RequestParam(defaultValue = "20") int pageSize,
+                    @RequestParam(required = false) String search,
+                    @RequestParam(required = false) String sortBy
+            ) {
+        return ResponseData.<PageResponse<List<UserDetailResponse>>>builder()
+                .message(Translator.toLocale("user.specification"))
+                .result(userService.getUserWithSortByMultipleColumnAndSearch(pageNo, pageSize, search, sortBy))
+                .build();
+    }
 
 }

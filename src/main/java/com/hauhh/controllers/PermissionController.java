@@ -2,6 +2,7 @@ package com.hauhh.controllers;
 
 
 import com.hauhh.commons.ResponseData;
+import com.hauhh.configurations.Translator;
 import com.hauhh.controllers.request.PermissionRequest;
 import com.hauhh.controllers.response.PermissionResponse;
 import com.hauhh.services.PermissionService;
@@ -32,7 +33,7 @@ public class PermissionController {
     @GetMapping
     public ResponseData<List<PermissionResponse>> getAllPermissions() {
         return ResponseData.<List<PermissionResponse>>builder()
-                .message("Get all permissions")
+                .message(Translator.toLocale("permission.get.all"))
                 .result(permissionService.getAllPermissions())
                 .build();
     }
@@ -42,9 +43,9 @@ public class PermissionController {
             description = "Create permissions for user"
     )
     @PostMapping
-    public ResponseData<PermissionResponse> createPermission(@RequestBody PermissionRequest request){
+    public ResponseData<PermissionResponse> createPermission(@RequestBody PermissionRequest request) {
         return ResponseData.<PermissionResponse>builder()
-                .message("Create permission")
+                .message(Translator.toLocale("permission.create"))
                 .result(permissionService.createPermission(request))
                 .build();
     }
@@ -54,10 +55,10 @@ public class PermissionController {
             description = "Delete permissions of users"
     )
     @DeleteMapping("/{permission}")
-    public ResponseData<Void> deletePermission(@PathVariable("permission") String permission){
+    public ResponseData<Void> deletePermission(@PathVariable("permission") String permission) {
         permissionService.deletePermission(permission);
         return ResponseData.<Void>builder()
-                .message("Delete permission")
+                .message(Translator.toLocale("permission.delete"))
                 .build();
     }
 
